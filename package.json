@@ -1,0 +1,37 @@
+{
+  "name": "@feature-sliced/cli",
+  "version": "0.0.1",
+  "description": "A command-line utility to quickly generate layers, slices, and segments.",
+  "scripts": {
+    "build": "tsup src/main.ts --dts --format esm,cjs --clean",
+    "watch": "npm run build -- --watch src",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint --cache .",
+    "format": "prettier --write . --cache",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
+  },
+  "bin": {
+    "fsd": "./dist/main.js"
+  },
+  "keywords": [
+    "feature-sliced",
+    "cli",
+    "generator",
+    "folders",
+    "layers",
+    "slices",
+    "segments"
+  ],
+  "license": "ISC"
+}
