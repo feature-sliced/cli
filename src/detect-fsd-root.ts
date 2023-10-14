@@ -19,9 +19,7 @@ export async function getLayersCountInFolder(
 }
 
 export async function detectFsdRoot(): Promise<string | Array<string>> {
-  const cwd = path.resolve(
-    "E:\\Repositories\\Frontend\\fsd_cli1\\shared\\features\\app\\pages\\app",
-  );
+  const cwd = path.resolve(process.cwd());
   const cwdLayersCount = await getLayersCountInFolder(cwd);
 
   if (cwdLayersCount >= 2) {
