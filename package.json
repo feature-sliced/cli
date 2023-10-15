@@ -18,6 +18,7 @@
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.3",
+    "simple-git": "^3.20.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"

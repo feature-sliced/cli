@@ -15,25 +15,18 @@ export async function generateFiles(
   fsdRoot: string,
   isTypeScript = false,
 ): Promise<void> {
-  const workingDirectory = path.resolve(fsdRoot);
+  const workingDirectory = fsdRoot;
   const workingDirectoryFiles = await fs.readdir(workingDirectory);
 
   if (!workingDirectoryFiles.includes(request.layer)) {
-    await fs.mkdir(path.resolve(workingDirectory, request.layer), {
-      recursive: true,
-    });
+    await fs.mkdir(path.resolve(workingDirectory, request.layer));
   }
 
   if (request.slices.length > 0) {
-    const layerPath = path.resolve(workingDirectory, request.layer);
-    const layerFiles = await fs.readdir(layerPath);
-
     for (const slice of request.slices) {
       const slicePath = path.resolve(workingDirectory, request.layer, slice);
 
-      if (!layerFiles.includes(slice)) {
-        await fs.mkdir(slicePath, { recursive: true });
-      }
+      await fs.mkdir(slicePath, { recursive: true });
 
       const sliceFiles = await fs.readdir(slicePath);
 
