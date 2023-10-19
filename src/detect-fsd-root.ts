@@ -2,23 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import { simpleGit } from "simple-git";
 
-const layers = new Set([
-  "app",
-  "pages",
-  "widgets",
-  "features",
-  "entities",
-  "shared",
-]);
-
-const defaultIgnoredFolders = new Set([
-  "node_modules",
-  ".git",
-  "dist",
-  "build",
-  ".idea",
-  ".vscode",
-]);
+const layers = ["app", "pages", "widgets", "features", "entities", "shared"];
+const defaultIgnoredFolders = ["node_modules", ".git", "dist", "build"];
 
 const git = simpleGit();
 
@@ -27,7 +12,9 @@ export async function getLayersCountInFolder(
 ): Promise<number> {
   const files = await fs.readdir(folderPath);
 
-  return files.filter((file) => layers.has(file)).length;
+  return files.filter((file) =>
+    layers.some((ignored) => file.endsWith(ignored)),
+  ).length;
 }
 
 export async function filterIgnoredFolders(
@@ -37,13 +24,18 @@ export async function filterIgnoredFolders(
     return [];
   }
 
-  const ignoredByGit = await git.checkIgnore(folders);
+  // git.checkIgnore() for absolute path return path in double quotes, so we need remove `"` from start and end, and normalize path
+  const ignoredByGit = (await git.checkIgnore(folders)).map((folder) =>
+    path.normalize(folder.slice(1, -1)),
+  );
+
   const filteredByGit = folders.filter(
     (folder) => !ignoredByGit.includes(folder),
   );
 
   const filteredByDefaults = filteredByGit.filter(
-    (folder) => !defaultIgnoredFolders.has(folder),
+    (folder) =>
+      !defaultIgnoredFolders.some((ignored) => folder.endsWith(ignored)),
   );
 
   return filteredByDefaults;
@@ -70,19 +62,18 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
     });
     const directories = directoryContent
       .filter((item) => item.isDirectory())
-      .map((item) => item.name);
+      .map((item) => path.join(currentDirectory, item.name));
 
     const filteredDirectories = isGitRepo
       ? await filterIgnoredFolders(directories)
-      : directories.filter((item) => !defaultIgnoredFolders.has(item));
+      : directories.filter(
+          (item) =>
+            !defaultIgnoredFolders.some((ignored) => item.endsWith(ignored)),
+        );
 
     let layerCount = 0;
     for (const item of filteredDirectories) {
-      const itemPath = path.join(currentDirectory, item);
-
-      queue.push(itemPath);
-
-      if (layers.has(item)) {
+      if (layers.some((layer) => item.endsWith(layer))) {
         layerCount++;
       }
     }
