@@ -13,7 +13,7 @@ export async function getLayersCountInFolder(
   const files = await fs.readdir(folderPath);
 
   return files.filter((file) =>
-    layers.some((ignored) => file.endsWith(ignored)),
+    layers.some((ignored) => path.basename(file) === ignored),
   ).length;
 }
 
@@ -35,7 +35,9 @@ export async function filterIgnoredFolders(
 
   const filteredByDefaults = filteredByGit.filter(
     (folder) =>
-      !defaultIgnoredFolders.some((ignored) => folder.endsWith(ignored)),
+      !defaultIgnoredFolders.some(
+        (ignored) => path.basename(folder) === ignored,
+      ),
   );
 
   return filteredByDefaults;
@@ -68,12 +70,16 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
       ? await filterIgnoredFolders(directories)
       : directories.filter(
           (item) =>
-            !defaultIgnoredFolders.some((ignored) => item.endsWith(ignored)),
+            !defaultIgnoredFolders.some(
+              (ignored) => path.basename(item) === ignored,
+            ),
         );
 
     let layerCount = 0;
     for (const item of filteredDirectories) {
-      if (layers.some((layer) => item.endsWith(layer))) {
+      queue.push(item);
+
+      if (layers.some((layer) => path.basename(item) === layer)) {
         layerCount++;
       }
     }
