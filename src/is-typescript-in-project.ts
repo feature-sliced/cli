@@ -1,6 +1,5 @@
-import * as process from "process";
-
-import * as path from "path";
+import process from "process";
+import path from "path";
 import fs from "fs/promises";
 
 export async function isPathContainsItem(
@@ -14,12 +13,14 @@ export async function isPathContainsItem(
 
 export async function isTypeScriptInProject(): Promise<boolean> {
   let currentPath = process.cwd();
+  let prevPath = "";
 
-  while (currentPath !== path.resolve(currentPath, "..")) {
+  while (currentPath !== prevPath) {
     if (await isPathContainsItem(currentPath, "package.json")) {
       return await isPathContainsItem(currentPath, "tsconfig.json");
     }
 
+    prevPath = currentPath;
     currentPath = path.resolve(currentPath, "..");
   }
 

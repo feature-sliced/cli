@@ -1,18 +1,19 @@
 import fs from "fs/promises";
 import path from "path";
-import { simpleGit } from "simple-git";
+import simpleGit from "simple-git";
 
 const layers = ["app", "pages", "widgets", "features", "entities", "shared"];
 const defaultIgnoredFolders = ["node_modules", ".git", "dist", "build"];
 
-const git = simpleGit();
-
 export async function getLayersCountInFolder(
   folderPath: string,
 ): Promise<number> {
-  const files = await fs.readdir(folderPath);
+  const files = await fs.readdir(folderPath, { withFileTypes: true });
 
-  return files.filter((file) => layers.includes(path.basename(file))).length;
+  return files
+    .filter((file) => file.isDirectory())
+    .map((file) => path.join(folderPath, file.name))
+    .filter((file) => layers.includes(path.basename(file))).length;
 }
 
 export async function filterIgnoredFolders(
@@ -21,6 +22,7 @@ export async function filterIgnoredFolders(
   if (folders.length === 0) {
     return [];
   }
+  const git = simpleGit();
 
   // git.checkIgnore() for absolute path return path in double quotes, so we need remove `"` from start and end, and normalize path
   const ignoredByGit = (await git.checkIgnore(folders)).map((folder) =>
@@ -46,6 +48,7 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
     return cwd;
   }
 
+  const git = simpleGit();
   const isGitRepo = await git.checkIsRepo();
 
   const queue = [cwd];
