@@ -10,15 +10,19 @@
     "format": "prettier --write . --cache",
     "test": "vitest"
   },
+  "dependencies": {
+    "simple-git": "^3.20.0"
+  },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.3",
+    "@types/mock-fs": "^4.13.3",
     "@types/node": "^20.8.5",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
+    "mock-fs": "^5.2.0",
     "prettier": "^3.0.3",
-    "simple-git": "^3.20.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"

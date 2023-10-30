@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import mockFs from "mock-fs";
 import {
-  isPathContainsItem,
   isTypeScriptInProject,
+  pathContainsItem,
 } from "../is-typescript-in-project";
 import path from "path";
 
@@ -12,7 +12,7 @@ describe("isPathContainsItem", () => {
       "/someFile.json": "{}",
     });
 
-    const result = await isPathContainsItem("/", "someFile.json");
+    const result = await pathContainsItem("/", "someFile.json");
 
     expect(result).toBe(true);
   });
@@ -22,7 +22,7 @@ describe("isPathContainsItem", () => {
       "/someOtherFile.json": "{}",
     });
 
-    const result = await isPathContainsItem("/", "someFile.json");
+    const result = await pathContainsItem("/", "someFile.json");
 
     expect(result).toBe(false);
   });

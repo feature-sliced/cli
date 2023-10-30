@@ -233,13 +233,24 @@ describe("generateFiles", () => {
   });
 
   test("create multiple segments", async () => {
-    mockFs(
+    await generateFiles(
       {
-        "/": {},
+        layer: "features",
+        slices: ["user"],
+        segments: ["ui", "model"],
+        rootOverride: null,
       },
-      { createCwd: false, createTmp: false },
+      path.resolve("/"),
     );
 
+    expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
+    expect(await pathExists(path.resolve("/features/user/model"))).toBe(true);
+    expect(await pathExists(path.resolve("/features/user/index.js"))).toBe(
+      true,
+    );
+  });
+
+  test("create multiple slices with the same segment", async () => {
     await generateFiles(
       {
         layer: "features",
@@ -261,13 +272,6 @@ describe("generateFiles", () => {
   });
 
   test("create grouped segments", async () => {
-    mockFs(
-      {
-        "/": {},
-      },
-      { createCwd: false, createTmp: false },
-    );
-
     await generateFiles(
       {
         layer: "features",

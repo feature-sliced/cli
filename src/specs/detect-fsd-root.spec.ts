@@ -153,7 +153,7 @@ describe("detectFsdRoot", () => {
     expect(result).toStrictEqual([path.resolve("/src"), path.resolve("/src2")]);
   });
 
-  test("2 layers in child dir, 3 layers in second child dir, should ignore second folder", async () => {
+  test("2 layers in child dir, 2 layers in second child dir, should ignore second folder", async () => {
     mockFs(
       {
         "/src/app": {},
