@@ -1,7 +1,6 @@
 # @feature-sliced/cli
 
 ![npm version](https://img.shields.io/npm/v/@feature-sliced/cli)
-![minzipped package size](https://img.shields.io/bundlephobia/minzip/@feature-sliced/cli.svg)
 
 A command-line utility to quickly generate layers, slices, and segments.
 
