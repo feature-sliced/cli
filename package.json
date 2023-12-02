@@ -1,16 +1,20 @@
 {
   "name": "@feature-sliced/cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "type": "module",
   "description": "A command-line utility to quickly generate layers, slices, and segments.",
   "scripts": {
-    "build": "tsup src/main.ts --dts --format esm,cjs --clean",
+    "build": "tsup src/main.ts --dts --format esm --clean",
     "watch": "npm run build -- --watch src",
     "prepublishOnly": "npm run build",
     "lint": "eslint --cache .",
     "format": "prettier --write . --cache",
-    "test": "vitest"
+    "test": "vitest src",
+    "test-integration": "vitest integration"
   },
   "dependencies": {
+    "commander": "^11.1.0",
+    "enquirer": "^2.4.1",
     "simple-git": "^3.20.0"
   },
   "devDependencies": {
@@ -21,6 +25,8 @@
     "@typescript-eslint/parser": "^6.7.4",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
+    "execa": "^8.0.1",
+    "get-bin-path": "^11.0.0",
     "mock-fs": "^5.2.0",
     "prettier": "^3.0.3",
     "tsup": "^7.2.0",
