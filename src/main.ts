@@ -2,10 +2,16 @@ import { relative, resolve } from "node:path";
 import process from "node:process";
 import { Command, Option } from "commander";
 import Enquirer from "enquirer";
+import chalk from "chalk";
 
-import { generateFiles, type CreationRequest, slicelessLayers } from "./generate-files";
+import {
+  generateFiles,
+  type CreationRequest,
+  slicelessLayers,
+} from "./generate-files";
 import { isTypeScriptInProject } from "./is-typescript-in-project";
 import { detectFsdRoot } from "./detect-fsd-root";
+import pkg from "../package.json";
 
 function cleanUpMultipleValues(values: Array<string>) {
   return values.flatMap((value) => value.split(",").filter(Boolean));
@@ -14,6 +20,52 @@ function cleanUpMultipleValues(values: Array<string>) {
 function parse(args: Array<string>) {
   return new Promise<CreationRequest>((resolve) => {
     const program = new Command();
+
+    program
+      .name(Object.keys(pkg.bin)[0])
+      .description(pkg.description)
+      .version(pkg.version)
+      .usage("[command] [options]")
+      .addHelpText(
+        "after",
+        `
+Examples:
+  Generate the ${chalk.blue("Shared")} layer with a ${chalk.green(
+    "ui",
+  )} segment and an index file in the ${chalk.magenta("src/")} folder:
+  $ fsd ${chalk.blue("shared")} ${chalk.green("ui")} -r ${chalk.magenta("src")}
+
+  Generate the ${chalk.blue("Entities")} layer with slices ${chalk.red(
+    "user",
+  )} and ${chalk.red("city")}, each with an ${chalk.green("api")} segment:
+  $ fsd ${chalk.blue("e")} ${chalk.red("user city")} -s ${chalk.green("api")}
+
+  Generate the ${chalk.blue("Features")} layer with an ${chalk.red(
+    "auth",
+  )} slice containing segments ${chalk.green("api")} and ${chalk.green(
+    "model",
+  )}:
+  $ fsd ${chalk.blue("feature")} ${chalk.red("auth")} -s ${chalk.green(
+    "api",
+  )},${chalk.green("model")}
+
+  Generate the ${chalk.blue(
+    "Widgets",
+  )} layer with an index file in the ${chalk.magenta("../fsd/")} folder:
+  $ fsd ${chalk.blue("widgets")} ${chalk.red("header")} --root ${chalk.magenta(
+    "../fsd/",
+  )}
+
+  Generate the ${chalk.blue("Pages")} layer with slices ${chalk.red(
+    "home",
+  )} and ${chalk.red("about")}, each with an ${chalk.green("ui")} segment
+  $ fsd ${chalk.blue("pages")} ${chalk.red("home")},${chalk.red(
+    "about",
+  )} -s ${chalk.green("ui")}
+
+  Generate the ${chalk.blue("App")} layer:
+  $ fsd ${chalk.blue("app")}`,
+      );
 
     function resolveCommand(
       segmentsOrSlices: Array<string>,
@@ -115,7 +167,7 @@ async function main() {
       : await detectFsdRoot();
 
   if (Array.isArray(fsdRoot)) {
-    ({ root: fsdRoot } = await Enquirer.prompt({
+    ({ root: fsdRoot } = (await Enquirer.prompt({
       name: "root",
       type: "select",
       message: "Pick a folder to generate in",
@@ -124,7 +176,7 @@ async function main() {
         value: path,
         name: path,
       })),
-    }) as { root: string });
+    })) as { root: string });
   }
 
   await generateFiles(request, fsdRoot, await isTypeScriptInProject());
