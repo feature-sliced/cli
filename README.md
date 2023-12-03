@@ -1,6 +1,6 @@
 # @feature-sliced/cli
 
-![npm version](https://img.shields.io/npm/v/@feature-sliced/cli)
+[![npm version](https://img.shields.io/npm/v/@feature-sliced/cli)](https://www.npmjs.com/package/@feature-sliced/cli)
 
 Utility to quickly generate layers, slices, and segments from [Feature-Sliced Design](https://feature-sliced.design).
 
