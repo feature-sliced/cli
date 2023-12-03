@@ -1,6 +1,6 @@
 {
   "name": "@feature-sliced/cli",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "type": "module",
   "description": "Utility to quickly generate layers, slices, and segments from Feature-Sliced Design.",
   "scripts": {
