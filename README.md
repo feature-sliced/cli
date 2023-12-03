@@ -30,32 +30,37 @@ If you have more than two slices in your project already, the CLI will know wher
 
 <details><summary>Other examples</summary>
 
-* Generate the Shared layer with a `ui` segment and an index file in the `src/` folder:
+- Generate the Shared layer with a `ui` segment and an index file in the `src/` folder:
+
   ```bash
   fsd shared ui -r src
   ```
 
-* Generate the Entities layer with slices `user` and `city`, each with an `api` segment:
+- Generate the Entities layer with slices `user` and `city`, each with an `api` segment:
+
   ```bash
   fsd e user city -s api
   ```
 
-* Generate the Features layer with an `auth` slice containing segments `api` and `model`:
+- Generate the Features layer with an `auth` slice containing segments `api` and `model`:
+
   ```bash
   fsd feature auth -s api,model
   ```
 
-* Generate the Widgets layer with an index file in the ../fsd/ folder:
+- Generate the Widgets layer with an index file in the ../fsd/ folder:
+
   ```bash
   fsd widgets header --root ../fsd/
   ```
 
-* Generate the Pages layer with slices home and about, each with an ui segment
+- Generate the Pages layer with slices home and about, each with an ui segment
+
   ```bash
   fsd pages home,about -s ui
   ```
 
-* Generate the App layer:
+- Generate the App layer:
   ```
   fsd app
   ```
@@ -64,7 +69,7 @@ If you have more than two slices in your project already, the CLI will know wher
 
 ## Credits
 
-Big thanks to a community member [Agent_RBY_](https://github.com/AgentRBY) for implementing most of the generating and detecting logic.
+Big thanks to a community member [`Agent_RBY_`](https://github.com/AgentRBY) for implementing most of the generating and detecting logic.
 
 ## License
 
