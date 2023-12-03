@@ -112,7 +112,7 @@ Examples:
 
     program
       .command("features")
-      .aliases(["f", "feature"])
+      .aliases(["f", "feature", "feat"])
       .description("Generate the Features layer")
       .argument("[slices...]", "slices to generate")
       .addOption(segmentsOption)

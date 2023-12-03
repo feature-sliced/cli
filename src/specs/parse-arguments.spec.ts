@@ -63,6 +63,9 @@ describe("parseArguments", () => {
     await expect(
       parseArguments(["node", "dist/main.js", "feature", "slice"]),
     ).resolves.toEqual(requestToCreateFeatures);
+    await expect(
+      parseArguments(["node", "dist/main.js", "feat", "slice"]),
+    ).resolves.toEqual(requestToCreateFeatures);
   });
 
   it("should recognize the Widgets layer and its aliases", async () => {
