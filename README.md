@@ -51,7 +51,7 @@ If you have at least one slice in your project already, the CLI will know where 
   fsd feat employee/employee-record
   ```
 
-  In a detected FSD root or current folder, produces:
+  In a detected FSD root[^1] or current folder, produces:
 
   - `features/employee/employee-record/index.(js|ts)` (depending on your project)
 
@@ -73,7 +73,7 @@ If you have at least one slice in your project already, the CLI will know where 
   fsd page edit-note, note-list -s ui api
   ```
 
-  In a detected FSD root or current folder, produces:
+  In a detected FSD root[^1] or current folder, produces:
 
   - `pages/edit-note/index.(js|ts)` (depending on your project)
   - `pages/edit-note/ui/`
@@ -90,7 +90,7 @@ If you have at least one slice in your project already, the CLI will know where 
   fsd shared ui -s api
   ```
 
-  In a detected FSD root or current folder, produces:
+  In a detected FSD root[^1] or current folder, produces:
 
   - `shared/ui/index.(js|ts)`
   - `shared/api/index.(js|ts)`
@@ -104,3 +104,5 @@ Big thanks to a community member [`Agent_RBY_`](https://github.com/AgentRBY) for
 ## License
 
 The source code of this project is distributed under the terms of the ISC license. It's like MIT, but better. [Click here](https://choosealicense.com/licenses/isc/) to learn what that means.
+
+[^1]: An FSD root is the folder that contains slices in Feature-Sliced Design. There can be several independent roots in one project.
