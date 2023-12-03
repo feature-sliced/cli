@@ -1,9 +1,9 @@
 import { promises as fs } from "node:fs";
 import os from "node:os";
+import { join } from "node:path";
 import { execa } from "execa";
 import { getBinPath } from "get-bin-path";
 import { expect, test } from "vitest";
-import { join } from "node:path";
 
 const temporaryDirectory = await fs.realpath(os.tmpdir());
 const fsd = (await getBinPath())!;
