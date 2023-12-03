@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { relative, resolve } from "node:path";
 import process from "node:process";
 import Enquirer from "enquirer";
