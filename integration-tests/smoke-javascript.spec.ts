@@ -17,9 +17,13 @@ test("basic functionality in a JavaScript project", async () => {
     { cwd: temporaryDirectory },
   );
   await execa("node", [fsd, "f", "auth", "-r", "src"], { cwd: project });
-  await execa("node", [fsd, "entities", "client", "-s", "api,ui", "--root", "src"], {
-    cwd: project,
-  });
+  await execa(
+    "node",
+    [fsd, "entities", "client", "-s", "api,ui", "--root", "src"],
+    {
+      cwd: project,
+    },
+  );
   await execa("node", [fsd, "pages", "login"], {
     cwd: project,
   });
@@ -36,5 +40,7 @@ test("basic functionality in a JavaScript project", async () => {
   await expect(
     fs.stat(join(project, "src/entities/client/ui")),
   ).resolves.toBeTruthy();
-  await expect(fs.stat(join(project, "src/pages/login/index.js"))).resolves.toBeTruthy();
+  await expect(
+    fs.stat(join(project, "src/pages/login/index.js")),
+  ).resolves.toBeTruthy();
 });

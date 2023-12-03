@@ -1,0 +1,2 @@
+"*": "prettier --write --log-level warn --ignore-unknown --cache"
+"*.ts": "eslint --cache --fix"

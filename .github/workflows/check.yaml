@@ -1,0 +1,50 @@
+name: Check the code
+
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: true
+
+      - name: Get/set Prettier and ESLint cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules/.cache/prettier
+            .eslintcache
+          key: ${{ runner.os }}-prettier-eslint-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-prettier-eslint-
+
+      - name: Try to build the library
+        run: pnpm run build
+
+      - name: Lint code for static errors
+        run: pnpm run lint
+
+      - name: Check code formatting
+        run: pnpm run check-formatting
+
+      - name: Type-check the code
+        run: pnpm run typecheck
+
+      - name: Run unit tests
+        run: pnpm run test
+
+      - name: Run integration tests
+        run: pnpm run test-integration
