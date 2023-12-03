@@ -1,8 +1,8 @@
 import { Command, Option } from "commander";
-import chalk from "chalk";
 
 import { type CreationRequest, slicelessLayers } from "./generate-files";
 import pkg from "../package.json";
+import { examples } from "./usage-examples";
 
 function cleanUpMultipleValues(values: Array<string>) {
   return values.flatMap((value) => value.split(",").filter(Boolean));
@@ -19,43 +19,14 @@ export function parseArguments(args: Array<string>) {
       .usage("[command] [options]")
       .addHelpText(
         "after",
-        `
-Examples:
-  Generate the ${chalk.blue("Shared")} layer with a ${chalk.green(
-    "ui",
-  )} segment and an index file in the ${chalk.magenta("src/")} folder:
-  $ fsd ${chalk.blue("shared")} ${chalk.green("ui")} -r ${chalk.magenta("src")}
-
-  Generate the ${chalk.blue("Entities")} layer with slices ${chalk.red(
-    "user",
-  )} and ${chalk.red("city")}, each with an ${chalk.green("api")} segment:
-  $ fsd ${chalk.blue("e")} ${chalk.red("user city")} -s ${chalk.green("api")}
-
-  Generate the ${chalk.blue("Features")} layer with an ${chalk.red(
-    "auth",
-  )} slice containing segments ${chalk.green("api")} and ${chalk.green(
-    "model",
-  )}:
-  $ fsd ${chalk.blue("feature")} ${chalk.red("auth")} -s ${chalk.green(
-    "api",
-  )},${chalk.green("model")}
-
-  Generate the ${chalk.blue(
-    "Widgets",
-  )} layer with an index file in the ${chalk.magenta("../fsd/")} folder:
-  $ fsd ${chalk.blue("widgets")} ${chalk.red("header")} --root ${chalk.magenta(
-    "../fsd/",
-  )}
-
-  Generate the ${chalk.blue("Pages")} layer with slices ${chalk.red(
-    "home",
-  )} and ${chalk.red("about")}, each with an ${chalk.green("ui")} segment
-  $ fsd ${chalk.blue("pages")} ${chalk.red("home")},${chalk.red(
-    "about",
-  )} -s ${chalk.green("ui")}
-
-  Generate the ${chalk.blue("App")} layer:
-  $ fsd ${chalk.blue("app")}`,
+        `\nExamples:\n${examples
+          .map(
+            ({ description, commands }) =>
+              `  ${description}:\n${commands
+                .map((command) => `    $ ${command}`)
+                .join("\n")}`,
+          )
+          .join("\n\n")}`,
       );
 
     function resolveCommand(

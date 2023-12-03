@@ -26,44 +26,74 @@ Or, for short:
 fsd e client -s ui,api
 ```
 
-If you have more than two slices in your project already, the CLI will know where to generate everything else. Otherwise, it will generate in the current folder, or you can specify the location yourself with the `--root` or `-r` option.
+If you have at least one slice in your project already, the CLI will know where to generate. Otherwise, it will generate in the current folder, or you can specify the location yourself with the `--root` or `-r` option.
 
 <details><summary>Other examples</summary>
 
-- Generate the Shared layer with a `ui` segment and an index file in the `src/` folder:
+- Generate the Widgets layer with a `bottom-bar` slice that has an index file and segments `ui` and `api` in the `src/` folder:
 
   ```bash
-  fsd shared ui -r src
+  fsd w bottom-bar -s ui api -r src
+  fsd widget bottom-bar -s ui,api -r src
+  fsd widgets bottom-bar --segments ui,api -r src
   ```
 
-- Generate the Entities layer with slices `user` and `city`, each with an `api` segment:
+  Produces:
+
+  - `src/widgets/bottom-bar/index.(js|ts)` (depending on your project)
+  - `src/widgets/bottom-bar/ui/`
+  - `src/widgets/bottom-bar/api/`
+
+- Generate the Features layer with a slice `employee/employee-record` inside a slice group `employee`:
 
   ```bash
-  fsd e user city -s api
+  fsd f employee/employee-record
+  fsd feat employee/employee-record
   ```
 
-- Generate the Features layer with an `auth` slice containing segments `api` and `model`:
+  In a detected FSD root or current folder, produces:
+
+  - `features/employee/employee-record/index.(js|ts)` (depending on your project)
+
+- Generate the Entities layer with a `user` slice inside the `src/lib` folder, creating it if necessary:
 
   ```bash
-  fsd feature auth -s api,model
+  fsd e user -r ./src/lib
+  fsd entity user --root ./src/lib
   ```
 
-- Generate the Widgets layer with an index file in the ../fsd/ folder:
+  Produces:
+
+  - `src/lib/entities/user/index.(js|ts)` (depending on your project)
+
+- Generate the Pages layer with slices `edit-note` and `note-list`, each containing segments `ui` and `api`:
 
   ```bash
-  fsd widgets header --root ../fsd/
+  fsd p edit-note note-list -s ui, api
+  fsd page edit-note, note-list -s ui api
   ```
 
-- Generate the Pages layer with slices home and about, each with an ui segment
+  In a detected FSD root or current folder, produces:
 
-  ```bash
-  fsd pages home,about -s ui
+  - `pages/edit-note/index.(js|ts)` (depending on your project)
+  - `pages/edit-note/ui/`
+  - `pages/edit-note/api/`
+  - `pages/note-list/index.(js|ts)`
+  - `pages/note-list/ui/`
+  - `pages/note-list/api/`
+
+- Generate the Shared layer with segments `ui` and `api` and an index file for each segment:
+
+  ```
+  fsd s ui api
+  fsd s -s ui api
+  fsd shared ui -s api
   ```
 
-- Generate the App layer:
-  ```
-  fsd app
-  ```
+  In a detected FSD root or current folder, produces:
+
+  - `shared/ui/index.(js|ts)`
+  - `shared/api/index.(js|ts)`
 
 </details>
 
