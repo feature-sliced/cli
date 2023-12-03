@@ -2,6 +2,9 @@ name: Check the code
 
 on: push
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -50,5 +53,5 @@ jobs:
 
       - name: Run integration tests
         run: |
-          npm install create-vite
+          npm install create-vite --global
           pnpm run test-integration
