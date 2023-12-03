@@ -13,8 +13,8 @@ describe("root detection algorithm", () => {
     const project = join(temporaryDirectory, "gitignore");
     await execa("rm", ["-rf", project]);
     await execa(
-      "npm",
-      ["create", "vite", "--", "gitignore", "--template", "vanilla-ts"],
+      "pnpm",
+      ["create", "vite", "gitignore", "--template", "vanilla-ts"],
       { cwd: temporaryDirectory },
     );
     await fs.mkdir(join(project, "src/features"), { recursive: true });

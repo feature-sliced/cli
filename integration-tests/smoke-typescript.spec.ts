@@ -12,8 +12,8 @@ test("basic functionality in a TypeScript project", async () => {
   const project = join(temporaryDirectory, "smoke-typescript");
   await execa("rm", ["-rf", project]);
   await execa(
-    "npm",
-    ["create", "vite", "--", "smoke-typescript", "--template", "vanilla-ts"],
+    "pnpm",
+    ["create", "vite", "smoke-typescript", "--template", "vanilla-ts"],
     { cwd: temporaryDirectory },
   );
   await execa("node", [fsd, "f", "auth", "-r", "src"], { cwd: project });

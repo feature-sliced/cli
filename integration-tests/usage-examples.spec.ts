@@ -19,11 +19,11 @@ describe.concurrent("the commands specified in usage examples", () => {
       const project = join(temporaryDirectory, `${argsSplit[0]}-with-segments`);
       await execa("rm", ["-rf", project]);
       await execa(
-        "npm",
+        "pnpm",
         [
           "create",
           "vite",
-          "--",
+
           `${argsSplit[0]}-with-segments`,
           "--template",
           "react-ts",
@@ -57,11 +57,11 @@ describe.concurrent("the commands specified in usage examples", () => {
       );
       await execa("rm", ["-rf", project]);
       await execa(
-        "npm",
+        "pnpm",
         [
           "create",
           "vite",
-          "--",
+
           `${argsSplit[0]}-in-a-slice-group`,
           "--template",
           "svelte",
@@ -90,11 +90,11 @@ describe.concurrent("the commands specified in usage examples", () => {
       );
       await execa("rm", ["-rf", project]);
       await execa(
-        "npm",
+        "pnpm",
         [
           "create",
           "vite",
-          "--",
+
           `${argsSplit[0]}-in-a-relative-root`,
           "--template",
           "vue-ts",
@@ -126,11 +126,11 @@ describe.concurrent("the commands specified in usage examples", () => {
       );
       await execa("rm", ["-rf", project]);
       await execa(
-        "npm",
+        "pnpm",
         [
           "create",
           "vite",
-          "--",
+
           `several-pages-with-segments-${argsSplit[0]}`,
           "--template",
           "qwik",
@@ -170,11 +170,11 @@ describe.concurrent("the commands specified in usage examples", () => {
       const project = join(temporaryDirectory, `shared-with-segments-${index}`);
       await execa("rm", ["-rf", project]);
       await execa(
-        "npm",
+        "pnpm",
         [
           "create",
           "vite",
-          "--",
+
           `shared-with-segments-${index}`,
           "--template",
           "preact-ts",

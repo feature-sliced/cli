@@ -12,8 +12,8 @@ test("basic functionality in a JavaScript project", async () => {
   const project = join(temporaryDirectory, "smoke-javascript");
   await execa("rm", ["-rf", project]);
   await execa(
-    "npm",
-    ["create", "vite", "--", "smoke-javascript", "--template", "vanilla"],
+    "pnpm",
+    ["create", "vite", "smoke-javascript", "--template", "vanilla"],
     { cwd: temporaryDirectory },
   );
   await execa("node", [fsd, "f", "auth", "-r", "src"], { cwd: project });
