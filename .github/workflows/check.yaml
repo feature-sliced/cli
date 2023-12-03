@@ -52,6 +52,4 @@ jobs:
         run: pnpm run test
 
       - name: Run integration tests
-        run: |
-          npm install create-vite --global
-          pnpm run test-integration
+        run: pnpm run test-integration

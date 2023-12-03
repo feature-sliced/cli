@@ -40,6 +40,9 @@ devDependencies:
   chalk:
     specifier: ^5.3.0
     version: 5.3.0
+  create-vite:
+    specifier: ^5.0.0
+    version: 5.0.0
   eslint:
     specifier: ^8.55.0
     version: 8.55.0
@@ -1519,6 +1522,12 @@ packages:
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    dev: true
+
+  /create-vite@5.0.0:
+    resolution: {integrity: sha512-whEVgshjPziiihkjvrhZVdxZ+KLrDi2OoGHjjPjavmkUfM1OJrwH1AtTsIDzL6tPcuWiNE9kO6GnTROzMGtIMw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     dev: true
 
   /cross-spawn@5.1.0:
