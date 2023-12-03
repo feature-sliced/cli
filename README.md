@@ -1,6 +1,7 @@
 # @feature-sliced/cli
 
 [![npm version](https://img.shields.io/npm/v/@feature-sliced/cli)](https://www.npmjs.com/package/@feature-sliced/cli)
+[![Static checks and tests](https://github.com/feature-sliced/cli/actions/workflows/check.yaml/badge.svg)](https://github.com/feature-sliced/cli/actions/workflows/check.yaml)
 
 Utility to quickly generate layers, slices, and segments from [Feature-Sliced Design](https://feature-sliced.design).
 

@@ -1,4 +1,4 @@
-name: Check the code
+name: Static checks and tests
 
 on: push
 
