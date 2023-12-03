@@ -2,7 +2,7 @@
   "name": "@feature-sliced/cli",
   "version": "1.0.0-beta.1",
   "type": "module",
-  "description": "A command-line utility to quickly generate layers, slices, and segments.",
+  "description": "Utility to quickly generate layers, slices, and segments from Feature-Sliced Design.",
   "scripts": {
     "build": "tsup src/main.ts --format esm --clean",
     "watch": "npm run build -- --watch src",
@@ -18,7 +18,8 @@
   "dependencies": {
     "commander": "^11.1.0",
     "enquirer": "^2.4.1",
-    "simple-git": "^3.21.0"
+    "simple-git": "^3.21.0",
+    "terminal-link": "^3.0.0"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
@@ -53,6 +54,8 @@
     "segments"
   ],
   "license": "ISC",
+  "homepage": "https://github.com/feature-sliced/cli",
+  "bugs": "https://github.com/feature-sliced/cli/issues",
   "files": [
     "dist",
     "src",

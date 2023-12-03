@@ -2,7 +2,7 @@
 
 ![npm version](https://img.shields.io/npm/v/@feature-sliced/cli)
 
-A command-line utility to quickly generate layers, slices, and segments.
+Utility to quickly generate layers, slices, and segments from [Feature-Sliced Design](https://feature-sliced.design).
 
 ## Installation
 

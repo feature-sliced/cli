@@ -1,4 +1,5 @@
 import { Command, Option } from "commander";
+import terminalLink from "terminal-link";
 
 import { type CreationRequest, slicelessLayers } from "./generate-files";
 import pkg from "../package.json";
@@ -14,7 +15,15 @@ export function parseArguments(args: Array<string>) {
 
     program
       .name(Object.keys(pkg.bin)[0])
-      .description(pkg.description)
+      .description(
+        pkg.description.replace(
+          "Feature-Sliced Design",
+          terminalLink(
+            "Feature-Sliced Design",
+            "https://feature-sliced.design",
+          ),
+        ),
+      )
       .version(pkg.version)
       .usage("[command] [options]")
       .addHelpText(
