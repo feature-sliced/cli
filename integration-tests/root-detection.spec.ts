@@ -2,14 +2,14 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import { join } from "node:path";
 import { execa } from "execa";
-import { getBinPath } from "get-bin-path";
 import { deleteAsync } from "del";
 import { it, describe, expect } from "vitest";
 
 import { TIMEOUT } from "./timeout";
+import { getFsdBinPath } from "./get-fsd-bin-path";
 
 const temporaryDirectory = await fs.realpath(os.tmpdir());
-const fsd = (await getBinPath())!;
+const fsd = await getFsdBinPath();
 
 describe("root detection algorithm", () => {
   it(
