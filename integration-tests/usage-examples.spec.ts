@@ -3,6 +3,7 @@ import os from "node:os";
 import { join } from "node:path";
 import { execa } from "execa";
 import { getBinPath } from "get-bin-path";
+import { deleteAsync } from "del";
 import { expect, test, describe } from "vitest";
 
 const temporaryDirectory = await fs.realpath(os.tmpdir());
@@ -17,7 +18,7 @@ describe.concurrent("the commands specified in usage examples", () => {
     const argsSplit = args.split(" ");
     test(`widget with segments (${argsSplit[0]})`, async () => {
       const project = join(temporaryDirectory, `${argsSplit[0]}-with-segments`);
-      await execa("rm", ["-rf", project]);
+      await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
         [
@@ -55,7 +56,7 @@ describe.concurrent("the commands specified in usage examples", () => {
         temporaryDirectory,
         `${argsSplit[0]}-in-a-slice-group`,
       );
-      await execa("rm", ["-rf", project]);
+      await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
         [
@@ -88,7 +89,7 @@ describe.concurrent("the commands specified in usage examples", () => {
         temporaryDirectory,
         `${argsSplit[0]}-in-a-relative-root`,
       );
-      await execa("rm", ["-rf", project]);
+      await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
         [
@@ -124,7 +125,7 @@ describe.concurrent("the commands specified in usage examples", () => {
         temporaryDirectory,
         `several-pages-with-segments-${argsSplit[0]}`,
       );
-      await execa("rm", ["-rf", project]);
+      await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
         [
@@ -168,7 +169,7 @@ describe.concurrent("the commands specified in usage examples", () => {
     const argsSplit = args.split(" ");
     test(`shared with different segment syntaxes (${index})`, async () => {
       const project = join(temporaryDirectory, `shared-with-segments-${index}`);
-      await execa("rm", ["-rf", project]);
+      await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
         [

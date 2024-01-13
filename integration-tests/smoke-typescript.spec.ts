@@ -3,6 +3,7 @@ import os from "node:os";
 import { join } from "node:path";
 import { execa } from "execa";
 import { getBinPath } from "get-bin-path";
+import { deleteAsync } from "del";
 import { expect, test } from "vitest";
 
 const temporaryDirectory = await fs.realpath(os.tmpdir());
@@ -10,7 +11,7 @@ const fsd = (await getBinPath())!;
 
 test("basic functionality in a TypeScript project", async () => {
   const project = join(temporaryDirectory, "smoke-typescript");
-  await execa("rm", ["-rf", project]);
+  await deleteAsync(project, { force: true });
   await execa(
     "pnpm",
     ["create", "vite", "smoke-typescript", "--template", "vanilla-ts"],

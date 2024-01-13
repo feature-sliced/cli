@@ -3,6 +3,7 @@ import os from "node:os";
 import { join } from "node:path";
 import { execa } from "execa";
 import { getBinPath } from "get-bin-path";
+import { deleteAsync } from "del";
 import { it, describe, expect } from "vitest";
 
 const temporaryDirectory = await fs.realpath(os.tmpdir());
@@ -11,7 +12,7 @@ const fsd = (await getBinPath())!;
 describe("root detection algorithm", () => {
   it("respects the .gitignore file", async () => {
     const project = join(temporaryDirectory, "gitignore");
-    await execa("rm", ["-rf", project]);
+    await deleteAsync(project, { force: true });
     await execa(
       "pnpm",
       ["create", "vite", "gitignore", "--template", "vanilla-ts"],
