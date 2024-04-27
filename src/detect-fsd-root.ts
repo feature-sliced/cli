@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import simpleGit from "simple-git";
+import { getIgnoredFolders, isGitRepo } from "./git-utils";
 
 const layers = ["app", "pages", "widgets", "features", "entities", "shared"];
 const defaultIgnoredFolders = ["node_modules", ".git", "dist", "build"];
@@ -22,22 +22,16 @@ export async function filterIgnoredFolders(
   if (folders.length === 0) {
     return [];
   }
-  const git = simpleGit();
 
-  // git.checkIgnore() for absolute path return path in double quotes, so we need remove `"` from start and end, and normalize path
-  const ignoredByGit = (await git.checkIgnore(folders)).map((folder) =>
-    path.normalize(folder.slice(1, -1)),
-  );
+  const ignoredByGit = await getIgnoredFolders(folders);
 
   const filteredByGit = folders.filter(
     (folder) => !ignoredByGit.includes(folder),
   );
 
-  const filteredByDefaults = filteredByGit.filter(
+  return filteredByGit.filter(
     (folder) => !defaultIgnoredFolders.includes(path.basename(folder)),
   );
-
-  return filteredByDefaults;
 }
 
 export async function detectFsdRoot(): Promise<string | Array<string>> {
@@ -48,8 +42,7 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
     return cwd;
   }
 
-  const git = simpleGit();
-  const isGitRepo = await git.checkIsRepo();
+  const isGitRepository = await isGitRepo();
 
   const queue = [cwd];
   let maxLayersCount = 0;
@@ -64,7 +57,7 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
       .filter((item) => item.isDirectory())
       .map((item) => path.join(currentDirectory, item.name));
 
-    const filteredDirectories = isGitRepo
+    const filteredDirectories = isGitRepository
       ? await filterIgnoredFolders(directories)
       : directories.filter(
           (item) => !defaultIgnoredFolders.includes(path.basename(item)),
@@ -77,6 +70,11 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
       if (layers.includes(path.basename(item))) {
         layerCount++;
       }
+    }
+
+    if (layerCount === layers.length) {
+      foldersWithMaxLayers = [currentDirectory];
+      break;
     }
 
     if (layerCount > maxLayersCount) {
