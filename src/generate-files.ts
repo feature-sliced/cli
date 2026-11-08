@@ -7,7 +7,9 @@ export type Layers =
   | "features"
   | "widgets"
   | "pages"
-  | "app";
+  | "app"
+  | "_pages"
+  | "_app";
 
 export interface CreationRequest {
   layer: Layers;
@@ -17,7 +19,7 @@ export interface CreationRequest {
   rootOverride: string | null;
 }
 
-export const slicelessLayers = ["shared", "app"];
+export const slicelessLayers = ["shared", "app", "_app"];
 
 export async function generateFiles(
   request: CreationRequest,

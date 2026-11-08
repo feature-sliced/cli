@@ -2,7 +2,16 @@ import fs from "fs/promises";
 import path from "path";
 import simpleGit from "simple-git";
 
-const layers = ["app", "pages", "widgets", "features", "entities", "shared"];
+const layers = [
+  "app",
+  "pages",
+  "_app",
+  "_pages",
+  "widgets",
+  "features",
+  "entities",
+  "shared",
+];
 const defaultIgnoredFolders = ["node_modules", ".git", "dist", "build"];
 
 export async function getLayersCountInFolder(

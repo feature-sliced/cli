@@ -126,6 +126,24 @@ export function parseArguments(args: Array<string>) {
       .addOption(rootOption)
       .action(resolveCommand);
 
+    program
+      .command("_pages")
+      .aliases(["_p", "_page"])
+      .description("Generate the Pages layer")
+      .argument("[slices...]", "slices to generate")
+      .addOption(segmentsOption)
+      .addOption(rootOption)
+      .action(resolveCommand);
+
+    program
+      .command("_app")
+      .alias("_a")
+      .description("Generate the App layer")
+      .argument("[segments...]", "segments to generate")
+      .addOption(segmentsOption)
+      .addOption(rootOption)
+      .action(resolveCommand);
+
     program.parse(args);
   });
 }

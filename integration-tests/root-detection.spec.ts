@@ -19,7 +19,7 @@ describe("root detection algorithm", () => {
       await deleteAsync(project, { force: true });
       await execa(
         "pnpm",
-        ["create", "vite", "gitignore", "--template", "vanilla-ts"],
+        ["create", "vite@6.5.0", "gitignore", "--template", "vanilla-ts"],
         { cwd: temporaryDirectory },
       );
       await fs.mkdir(join(project, "src/features"), { recursive: true });

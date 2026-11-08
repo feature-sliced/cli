@@ -60,6 +60,20 @@ describe("getLayersCountInFolder", () => {
     expect(result).toBe(2);
   });
 
+  test("2 special layers for Next.js project", async () => {
+    mockFs(
+      {
+        "/_app": {},
+        "/_pages": {},
+      },
+      { createCwd: false, createTmp: false },
+    );
+
+    const result = await getLayersCountInFolder(path.resolve("/"));
+
+    expect(result).toBe(2);
+  });
+
   afterEach(() => {
     mockFs.restore();
   });

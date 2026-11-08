@@ -106,6 +106,25 @@ describe("parseArguments", () => {
     ).resolves.toEqual(requestToCreatePages);
   });
 
+  it("should recognize the Pages layer and its aliases for Next.js project", async () => {
+    const requestToCreatePages = {
+      layer: "_pages",
+      rootOverride: null,
+      segments: [],
+      slices: ["slice"],
+    };
+
+    await expect(
+      parseArguments(["node", "dist/main.js", "_pages", "slice"]),
+    ).resolves.toEqual(requestToCreatePages);
+    await expect(
+      parseArguments(["node", "dist/main.js", "_p", "slice"]),
+    ).resolves.toEqual(requestToCreatePages);
+    await expect(
+      parseArguments(["node", "dist/main.js", "_page", "slice"]),
+    ).resolves.toEqual(requestToCreatePages);
+  });
+
   it("should recognize the App layer and its alias", async () => {
     const requestToCreateApp = {
       layer: "app",
@@ -119,6 +138,22 @@ describe("parseArguments", () => {
     ).resolves.toEqual(requestToCreateApp);
     await expect(
       parseArguments(["node", "dist/main.js", "a"]),
+    ).resolves.toEqual(requestToCreateApp);
+  });
+
+  it("should recognize the App layer and its alias for Next.js project", async () => {
+    const requestToCreateApp = {
+      layer: "_app",
+      rootOverride: null,
+      segments: [],
+      slices: [],
+    };
+
+    await expect(
+      parseArguments(["node", "dist/main.js", "_app"]),
+    ).resolves.toEqual(requestToCreateApp);
+    await expect(
+      parseArguments(["node", "dist/main.js", "_a"]),
     ).resolves.toEqual(requestToCreateApp);
   });
 
@@ -137,6 +172,12 @@ describe("parseArguments", () => {
     ).resolves.toHaveProperty("slices", []);
   });
 
+  it("should not fail when sliceful layers are generated without a slice for Next.js project", async () => {
+    await expect(
+      parseArguments(["node", "dist/main.js", "_pages"]),
+    ).resolves.toHaveProperty("slices", []);
+  });
+
   it("should treat slice names in sliceless layers as segments", async () => {
     await expect(
       parseArguments([
@@ -149,6 +190,12 @@ describe("parseArguments", () => {
     ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
     await expect(
       parseArguments(["node", "dist/main.js", "app", "segment1", "segment2"]),
+    ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
+  });
+
+  it("should treat slice names in sliceless layers as segments for Next.js project", async () => {
+    await expect(
+      parseArguments(["node", "dist/main.js", "_app", "segment1", "segment2"]),
     ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
   });
 
@@ -174,6 +221,12 @@ describe("parseArguments", () => {
     await expect(
       parseArguments(["node", "dist/main.js", "pages", "slice1", "slice2"]),
     ).resolves.toMatchObject({ slices: ["slice1", "slice2"], layer: "pages" });
+  });
+
+  it("should allow generating multiple slices at the same time for Next.js project", async () => {
+    await expect(
+      parseArguments(["node", "dist/main.js", "_pages", "slice1", "slice2"]),
+    ).resolves.toMatchObject({ slices: ["slice1", "slice2"], layer: "_pages" });
   });
 
   it("should recognize the --segments option", async () => {

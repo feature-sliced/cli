@@ -98,6 +98,31 @@ If you have at least one slice in your project already, the CLI will know where 
 
 </details>
 
+## Usage with Next.js
+
+Use `_app` and `_pages` for the FSD App and Pages layers to avoid conflicts with Next.js routing directories.
+
+Explicitly specify the directory containing your FSD layers using `--root` or `-r`. Automatic root detection may mistake the Next.js `app` and `pages` directories for FSD layers and select the wrong location.
+
+For example, if your FSD layers are located in `src`:
+
+```bash
+fsd _pages home --segments ui api --root src
+fsd _app providers --root src
+```
+
+The following aliases are supported:
+
+- `_p` and `_page` for `_pages`;
+- `_a` for `_app`.
+
+For example:
+
+```bash
+fsd _p home -s ui api -r src
+fsd _a -s providers -r src
+```
+
 ## Credits
 
 Big thanks to a community member [`Agent_RBY_`](https://github.com/AgentRBY) for implementing most of the generating and detecting logic.

@@ -184,6 +184,21 @@ describe("generateFiles", () => {
     );
   });
 
+  test("create segment for slice less Layers", async () => {
+    await generateFiles(
+      {
+        layer: "shared",
+        slices: [],
+        segments: ["ui"],
+        rootOverride: null,
+      },
+      path.resolve("/"),
+    );
+
+    expect(await pathExists(path.resolve("/shared/ui/"))).toBe(true);
+    expect(await pathExists(path.resolve("/shared/ui/index.js"))).toBe(true);
+  });
+
   test("create exists segment", async () => {
     mockFs(
       {
@@ -230,6 +245,22 @@ describe("generateFiles", () => {
     expect(await pathExists(path.resolve("/features/user/index.ts"))).toBe(
       true,
     );
+  });
+
+  test("create segment with typescript for slice less Layers", async () => {
+    await generateFiles(
+      {
+        layer: "shared",
+        slices: [],
+        segments: ["ui"],
+        rootOverride: null,
+      },
+      path.resolve("/"),
+      true,
+    );
+
+    expect(await pathExists(path.resolve("/shared/ui/"))).toBe(true);
+    expect(await pathExists(path.resolve("/shared/ui/index.ts"))).toBe(true);
   });
 
   test("create multiple segments", async () => {
