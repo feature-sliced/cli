@@ -15,6 +15,7 @@ describe("parseArguments", () => {
     const requestToCreateShared = {
       layer: "shared",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: [],
     };
@@ -31,6 +32,7 @@ describe("parseArguments", () => {
     const requestToCreateEntities = {
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -50,6 +52,7 @@ describe("parseArguments", () => {
     const requestToCreateFeatures = {
       layer: "features",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -72,6 +75,7 @@ describe("parseArguments", () => {
     const requestToCreateWidgets = {
       layer: "widgets",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -91,6 +95,7 @@ describe("parseArguments", () => {
     const requestToCreatePages = {
       layer: "pages",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -110,6 +115,7 @@ describe("parseArguments", () => {
     const requestToCreateApp = {
       layer: "app",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: [],
     };
@@ -189,6 +195,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "shared",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: [],
     });
@@ -205,6 +212,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: [],
     });
@@ -216,6 +224,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "shared",
       rootOverride: "src/",
+      useNumbering: false,
       segments: [],
       slices: [],
     });
@@ -236,8 +245,49 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: ["slice1", "slice2"],
+    });
+  });
+
+  it.each(["shared", "entities", "features", "widgets", "pages", "app"])(
+    "should enable numbering with --numbering and -n for the %s command",
+    async (layer) => {
+      for (const flag of ["--numbering", "-n"]) {
+        await expect(
+          parseArguments(["node", "dist/main.js", layer, flag, "profile"]),
+        ).resolves.toEqual({
+          layer,
+          rootOverride: null,
+          useNumbering: true,
+          slices: ["shared", "app"].includes(layer) ? [] : ["profile"],
+          segments: ["shared", "app"].includes(layer) ? ["profile"] : [],
+        });
+      }
+    },
+  );
+
+  it("should combine numbering with a command alias, root and segments", async () => {
+    await expect(
+      parseArguments([
+        "node",
+        "dist/main.js",
+        "w",
+        "profile",
+        "--numbering",
+        "--root",
+        "src",
+        "--segments",
+        "ui",
+        "api",
+      ]),
+    ).resolves.toEqual({
+      layer: "widgets",
+      slices: ["profile"],
+      segments: ["ui", "api"],
+      rootOverride: "src",
+      useNumbering: true,
     });
   });
 });

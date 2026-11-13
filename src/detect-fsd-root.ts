@@ -1,82 +1,130 @@
+import { Folder, File, getLayers } from "@feature-sliced/filesystem";
+import { Dirent } from "fs";
 import fs from "fs/promises";
 import path from "path";
 import simpleGit from "simple-git";
+import { SearchRules } from "./rules";
 
-const layers = ["app", "pages", "widgets", "features", "entities", "shared"];
 const defaultIgnoredFolders = ["node_modules", ".git", "dist", "build"];
 
 export async function getLayersCountInFolder(
-  folderPath: string,
+  folderTree: Folder,
 ): Promise<number> {
-  const files = await fs.readdir(folderPath, { withFileTypes: true });
+  const layers = Object.keys(getLayers(folderTree));
 
-  return files
-    .filter((file) => file.isDirectory())
-    .map((file) => path.join(folderPath, file.name))
-    .filter((file) => layers.includes(path.basename(file))).length;
+  return layers.length;
 }
 
 export async function filterIgnoredFolders(
-  folders: Array<string>,
-): Promise<Array<string>> {
-  if (folders.length === 0) {
-    return [];
+  folder: Folder,
+  excludedDirectories?: string[],
+): Promise<Folder> {
+  if (folder.children.length === 0) {
+    return folder;
   }
-  const git = simpleGit();
 
-  // git.checkIgnore() for absolute path return path in double quotes, so we need remove `"` from start and end, and normalize path
-  const ignoredByGit = (await git.checkIgnore(folders)).map((folder) =>
-    path.normalize(folder.slice(1, -1)),
-  );
-
-  const filteredByGit = folders.filter(
-    (folder) => !ignoredByGit.includes(folder),
-  );
-
-  const filteredByDefaults = filteredByGit.filter(
-    (folder) => !defaultIgnoredFolders.includes(path.basename(folder)),
-  );
-
-  return filteredByDefaults;
+  return {
+    ...folder,
+    children: folder.children.filter(
+      (item) =>
+        item.type === "folder" &&
+        !excludedDirectories?.includes(item.path) &&
+        !defaultIgnoredFolders.includes(path.basename(item.path)),
+    ),
+  };
 }
 
-export async function detectFsdRoot(): Promise<string | Array<string>> {
-  const cwd = path.resolve(process.cwd());
-  const cwdLayersCount = await getLayersCountInFolder(cwd);
+export async function getFsdTree(
+  folderPath: string,
+  searchRule?: SearchRules,
+): Promise<Folder> {
+  const files = await fs.readdir(folderPath, { withFileTypes: true });
+
+  const folderTree: Folder = {
+    type: "folder",
+    path: path.resolve(folderPath),
+    children: files
+      .filter((file) => {
+        return (
+          (file.isDirectory() || file.isFile()) &&
+          !searchRule?.excludedDirectories.includes(
+            path.resolve(folderPath, file.name),
+          )
+        );
+      })
+      .map<Folder | File>((file: Dirent) => {
+        const filePath = path.resolve(folderPath, file.name);
+
+        if (file.isDirectory()) {
+          return {
+            type: "folder",
+            path: filePath,
+            children: [],
+          };
+        } else {
+          return {
+            type: "file",
+            path: filePath,
+          };
+        }
+      }),
+  };
+
+  return folderTree;
+}
+
+export async function detectFsdRoot(
+  searchRule?: SearchRules,
+): Promise<string | Array<string>> {
+  const searchRootResolve = path.resolve(
+    searchRule?.searchRoot || process.cwd(),
+  );
+  const folderTree = await getFsdTree(searchRootResolve, searchRule);
+  const cwdLayersCount = await getLayersCountInFolder(folderTree);
 
   if (cwdLayersCount >= 2) {
-    return cwd;
+    return searchRootResolve;
   }
 
-  const git = simpleGit();
+  const git = simpleGit({
+    config: ["core.quotePath=false"],
+  });
   const isGitRepo = await git.checkIsRepo();
 
-  const queue = [cwd];
+  const queue = [searchRootResolve];
   let maxLayersCount = 0;
   let foldersWithMaxLayers: string[] = [];
 
   while (queue.length > 0) {
     const currentDirectory = queue.shift()!;
-    const directoryContent = await fs.readdir(currentDirectory, {
-      withFileTypes: true,
-    });
-    const directories = directoryContent
-      .filter((item) => item.isDirectory())
-      .map((item) => path.join(currentDirectory, item.name));
 
-    const filteredDirectories = isGitRepo
-      ? await filterIgnoredFolders(directories)
-      : directories.filter(
-          (item) => !defaultIgnoredFolders.includes(path.basename(item)),
-        );
+    const directoryContent = await getFsdTree(currentDirectory, searchRule);
 
-    let layerCount = 0;
-    for (const item of filteredDirectories) {
-      queue.push(item);
+    const pathsForGit = directoryContent.children.map((item) => item.path);
 
-      if (layers.includes(path.basename(item))) {
-        layerCount++;
-      }
+    // git.checkIgnore() for absolute path return path in double quotes, so we need remove `"` from start and end, and normalize path
+    const ignoredByGitPaths =
+      isGitRepo && pathsForGit.length > 0
+        ? (await git.checkIgnore(pathsForGit)).map((folder) =>
+            path.normalize(folder.slice(1, -1)),
+          )
+        : [];
+
+    const excludedDirectories = [
+      ...ignoredByGitPaths,
+      ...(searchRule?.excludedDirectories || []),
+    ];
+
+    const filteredDirectories = await filterIgnoredFolders(
+      directoryContent,
+      excludedDirectories,
+    );
+
+    const detectedLayers = getLayers(filteredDirectories);
+    const layerCount = Object.keys(detectedLayers).length;
+
+    for (const item of filteredDirectories.children) {
+      queue.push(item.path);
     }
 
     if (layerCount > maxLayersCount) {
@@ -88,7 +136,7 @@ export async function detectFsdRoot(): Promise<string | Array<string>> {
   }
 
   if (maxLayersCount === 0) {
-    return cwd;
+    return process.cwd();
   }
 
   if (foldersWithMaxLayers.length === 1) {

@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import mockFs from "mock-fs";
-import {
-  isTypeScriptInProject,
-  pathContainsItem,
-} from "../is-typescript-in-project";
 import path from "path";
+import {
+  pathContainsItem,
+  hasTypeScriptConfig,
+} from "../detect-project-packages";
 
 describe("isPathContainsItem", () => {
   test("item exists in path", async () => {
@@ -41,7 +41,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce("/");
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(true);
   });
@@ -55,7 +55,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce(path.resolve("/test"));
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(true);
   });
@@ -67,7 +67,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce(path.resolve("/"));
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(false);
   });
@@ -80,7 +80,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce(path.resolve("/test"));
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(false);
   });
@@ -92,7 +92,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce(path.resolve("/"));
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(false);
   });
@@ -105,7 +105,7 @@ describe("isTypeScriptInProject", () => {
 
     vi.spyOn(process, "cwd").mockReturnValueOnce(path.resolve("/test"));
 
-    const result = await isTypeScriptInProject();
+    const result = await hasTypeScriptConfig();
 
     expect(result).toBe(false);
   });

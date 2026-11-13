@@ -18,7 +18,7 @@ test(
     await deleteAsync(project, { force: true });
     await execa(
       "pnpm",
-      ["create", "vite", "smoke-typescript", "--template", "vanilla-ts"],
+      ["create", "vite@6.5.0", "smoke-typescript", "--template", "vanilla-ts"],
       { cwd: temporaryDirectory },
     );
     await execa("node", [fsd, "f", "auth", "-r", "src"], { cwd: project });

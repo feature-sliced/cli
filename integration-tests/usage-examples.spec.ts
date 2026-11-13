@@ -30,7 +30,7 @@ describe.concurrent("the commands specified in usage examples", () => {
           "pnpm",
           [
             "create",
-            "vite",
+            "vite@6.5.0",
 
             `${argsSplit[0]}-with-segments`,
             "--template",
@@ -74,7 +74,7 @@ describe.concurrent("the commands specified in usage examples", () => {
           "pnpm",
           [
             "create",
-            "vite",
+            "vite@6.5.0",
 
             `${argsSplit[0]}-in-a-slice-group`,
             "--template",
@@ -111,7 +111,7 @@ describe.concurrent("the commands specified in usage examples", () => {
           "pnpm",
           [
             "create",
-            "vite",
+            "vite@6.5.0",
 
             `${argsSplit[0]}-in-a-relative-root`,
             "--template",
@@ -151,7 +151,7 @@ describe.concurrent("the commands specified in usage examples", () => {
           "pnpm",
           [
             "create",
-            "vite",
+            "vite@6.5.0",
 
             `several-pages-with-segments-${argsSplit[0]}`,
             "--template",
@@ -202,7 +202,7 @@ describe.concurrent("the commands specified in usage examples", () => {
           "pnpm",
           [
             "create",
-            "vite",
+            "vite@6.5.0",
 
             `shared-with-segments-${index}`,
             "--template",

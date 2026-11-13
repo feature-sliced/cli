@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import mockFs from "mock-fs";
 import path from "path";
-import { detectFsdRoot, getLayersCountInFolder } from "../detect-fsd-root";
+import {
+  detectFsdRoot,
+  getFsdTree,
+  getLayersCountInFolder,
+} from "../detect-fsd-root";
 
 describe("getLayersCountInFolder", () => {
   test("only 2 layers", async () => {
@@ -13,7 +17,8 @@ describe("getLayersCountInFolder", () => {
       { createCwd: false, createTmp: false },
     );
 
-    const result = await getLayersCountInFolder(path.resolve("/"));
+    const folderTree = await getFsdTree(path.resolve("/"));
+    const result = await getLayersCountInFolder(folderTree);
 
     expect(result).toBe(2);
   });
@@ -26,7 +31,8 @@ describe("getLayersCountInFolder", () => {
       { createCwd: false, createTmp: false },
     );
 
-    const result = await getLayersCountInFolder(path.resolve("/"));
+    const folderTree = await getFsdTree(path.resolve("/"));
+    const result = await getLayersCountInFolder(folderTree);
 
     expect(result).toBe(0);
   });
@@ -40,7 +46,8 @@ describe("getLayersCountInFolder", () => {
       { createCwd: false, createTmp: false },
     );
 
-    const result = await getLayersCountInFolder(path.resolve("/"));
+    const folderTree = await getFsdTree(path.resolve("/"));
+    const result = await getLayersCountInFolder(folderTree);
 
     expect(result).toBe(0);
   });
@@ -55,7 +62,23 @@ describe("getLayersCountInFolder", () => {
       { createCwd: false, createTmp: false },
     );
 
-    const result = await getLayersCountInFolder(path.resolve("/"));
+    const folderTree = await getFsdTree(path.resolve("/"));
+    const result = await getLayersCountInFolder(folderTree);
+
+    expect(result).toBe(2);
+  });
+
+  test("2 special layers for Next.js project", async () => {
+    mockFs(
+      {
+        "/_app": {},
+        "/_pages": {},
+      },
+      { createCwd: false, createTmp: false },
+    );
+
+    const folderTree = await getFsdTree(path.resolve("/"));
+    const result = await getLayersCountInFolder(folderTree);
 
     expect(result).toBe(2);
   });
