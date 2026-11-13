@@ -15,6 +15,7 @@ describe("parseArguments", () => {
     const requestToCreateShared = {
       layer: "shared",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: [],
     };
@@ -31,6 +32,7 @@ describe("parseArguments", () => {
     const requestToCreateEntities = {
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -50,6 +52,7 @@ describe("parseArguments", () => {
     const requestToCreateFeatures = {
       layer: "features",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -72,6 +75,7 @@ describe("parseArguments", () => {
     const requestToCreateWidgets = {
       layer: "widgets",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -91,6 +95,7 @@ describe("parseArguments", () => {
     const requestToCreatePages = {
       layer: "pages",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: ["slice"],
     };
@@ -106,29 +111,11 @@ describe("parseArguments", () => {
     ).resolves.toEqual(requestToCreatePages);
   });
 
-  it("should recognize the Pages layer and its aliases for Next.js project", async () => {
-    const requestToCreatePages = {
-      layer: "_pages",
-      rootOverride: null,
-      segments: [],
-      slices: ["slice"],
-    };
-
-    await expect(
-      parseArguments(["node", "dist/main.js", "_pages", "slice"]),
-    ).resolves.toEqual(requestToCreatePages);
-    await expect(
-      parseArguments(["node", "dist/main.js", "_p", "slice"]),
-    ).resolves.toEqual(requestToCreatePages);
-    await expect(
-      parseArguments(["node", "dist/main.js", "_page", "slice"]),
-    ).resolves.toEqual(requestToCreatePages);
-  });
-
   it("should recognize the App layer and its alias", async () => {
     const requestToCreateApp = {
       layer: "app",
       rootOverride: null,
+      useNumbering: false,
       segments: [],
       slices: [],
     };
@@ -138,22 +125,6 @@ describe("parseArguments", () => {
     ).resolves.toEqual(requestToCreateApp);
     await expect(
       parseArguments(["node", "dist/main.js", "a"]),
-    ).resolves.toEqual(requestToCreateApp);
-  });
-
-  it("should recognize the App layer and its alias for Next.js project", async () => {
-    const requestToCreateApp = {
-      layer: "_app",
-      rootOverride: null,
-      segments: [],
-      slices: [],
-    };
-
-    await expect(
-      parseArguments(["node", "dist/main.js", "_app"]),
-    ).resolves.toEqual(requestToCreateApp);
-    await expect(
-      parseArguments(["node", "dist/main.js", "_a"]),
     ).resolves.toEqual(requestToCreateApp);
   });
 
@@ -172,12 +143,6 @@ describe("parseArguments", () => {
     ).resolves.toHaveProperty("slices", []);
   });
 
-  it("should not fail when sliceful layers are generated without a slice for Next.js project", async () => {
-    await expect(
-      parseArguments(["node", "dist/main.js", "_pages"]),
-    ).resolves.toHaveProperty("slices", []);
-  });
-
   it("should treat slice names in sliceless layers as segments", async () => {
     await expect(
       parseArguments([
@@ -190,12 +155,6 @@ describe("parseArguments", () => {
     ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
     await expect(
       parseArguments(["node", "dist/main.js", "app", "segment1", "segment2"]),
-    ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
-  });
-
-  it("should treat slice names in sliceless layers as segments for Next.js project", async () => {
-    await expect(
-      parseArguments(["node", "dist/main.js", "_app", "segment1", "segment2"]),
     ).resolves.toHaveProperty("segments", ["segment1", "segment2"]);
   });
 
@@ -223,12 +182,6 @@ describe("parseArguments", () => {
     ).resolves.toMatchObject({ slices: ["slice1", "slice2"], layer: "pages" });
   });
 
-  it("should allow generating multiple slices at the same time for Next.js project", async () => {
-    await expect(
-      parseArguments(["node", "dist/main.js", "_pages", "slice1", "slice2"]),
-    ).resolves.toMatchObject({ slices: ["slice1", "slice2"], layer: "_pages" });
-  });
-
   it("should recognize the --segments option", async () => {
     await expect(
       parseArguments([
@@ -242,6 +195,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "shared",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: [],
     });
@@ -258,6 +212,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: [],
     });
@@ -269,6 +224,7 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "shared",
       rootOverride: "src/",
+      useNumbering: false,
       segments: [],
       slices: [],
     });
@@ -289,8 +245,49 @@ describe("parseArguments", () => {
     ).resolves.toEqual({
       layer: "entities",
       rootOverride: null,
+      useNumbering: false,
       segments: ["segment1", "segment2"],
       slices: ["slice1", "slice2"],
+    });
+  });
+
+  it.each(["shared", "entities", "features", "widgets", "pages", "app"])(
+    "should enable numbering with --numbering and -n for the %s command",
+    async (layer) => {
+      for (const flag of ["--numbering", "-n"]) {
+        await expect(
+          parseArguments(["node", "dist/main.js", layer, flag, "profile"]),
+        ).resolves.toEqual({
+          layer,
+          rootOverride: null,
+          useNumbering: true,
+          slices: ["shared", "app"].includes(layer) ? [] : ["profile"],
+          segments: ["shared", "app"].includes(layer) ? ["profile"] : [],
+        });
+      }
+    },
+  );
+
+  it("should combine numbering with a command alias, root and segments", async () => {
+    await expect(
+      parseArguments([
+        "node",
+        "dist/main.js",
+        "w",
+        "profile",
+        "--numbering",
+        "--root",
+        "src",
+        "--segments",
+        "ui",
+        "api",
+      ]),
+    ).resolves.toEqual({
+      layer: "widgets",
+      slices: ["profile"],
+      segments: ["ui", "api"],
+      rootOverride: "src",
+      useNumbering: true,
     });
   });
 });

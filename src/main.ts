@@ -4,16 +4,29 @@ import process from "node:process";
 import Enquirer from "enquirer";
 
 import { generateFiles, slicelessLayers } from "./generate-files";
-import { isTypeScriptInProject } from "./is-typescript-in-project";
 import { detectFsdRoot } from "./detect-fsd-root";
 import { parseArguments } from "./parse-arguments";
+import { getProjectSettings, ProjectSettings } from "./detect-project-packages";
+import { getRules } from "./rules";
 
 async function main() {
   const request = await parseArguments(process.argv);
-  let fsdRoot =
-    request.rootOverride !== null
-      ? resolve(request.rootOverride)
-      : await detectFsdRoot();
+
+  let projectSettings: ProjectSettings;
+  let fsdRoot: string | Array<string>;
+  let rules;
+
+  if (request.rootOverride !== null) {
+    fsdRoot = resolve(request.rootOverride);
+
+    projectSettings = await getProjectSettings(request.rootOverride);
+    rules = await getRules(projectSettings, request);
+  } else {
+    projectSettings = await getProjectSettings(request.rootOverride);
+    rules = await getRules(projectSettings, request);
+
+    fsdRoot = await detectFsdRoot(rules.search);
+  }
 
   if (Array.isArray(fsdRoot)) {
     ({ root: fsdRoot } = (await Enquirer.prompt({
@@ -37,7 +50,9 @@ async function main() {
     process.exit(1);
   }
 
-  await generateFiles(request, fsdRoot, await isTypeScriptInProject());
+  rules = await getRules(projectSettings, request, fsdRoot);
+
+  await generateFiles(request, fsdRoot, rules);
 }
 
 await main();

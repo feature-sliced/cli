@@ -40,7 +40,11 @@ export function parseArguments(args: Array<string>) {
 
     function resolveCommand(
       segmentsOrSlices: Array<string>,
-      options: { segments: Array<string> | null; root: string | null },
+      options: {
+        segments: Array<string> | null;
+        root: string | null;
+        numbering: boolean;
+      },
       command: Command,
     ) {
       const layer = command.name() as CreationRequest["layer"];
@@ -53,6 +57,7 @@ export function parseArguments(args: Array<string>) {
           slices: [],
           segments: cleanUpMultipleValues(segments),
           rootOverride: options.root ?? null,
+          useNumbering: options.numbering,
         });
       } else {
         const slices = segmentsOrSlices;
@@ -62,6 +67,7 @@ export function parseArguments(args: Array<string>) {
           slices: cleanUpMultipleValues(slices),
           segments: cleanUpMultipleValues(options.segments ?? []),
           rootOverride: options.root ?? null,
+          useNumbering: options.numbering,
         });
       }
     }
@@ -71,6 +77,10 @@ export function parseArguments(args: Array<string>) {
       "segments to generate",
     );
     const rootOption = new Option("-r, --root <root>", "FSD root folder");
+    const numberingOption = new Option(
+      "-n, --numbering",
+      "Number layers from 1_app to 6_shared",
+    ).default(false);
 
     program
       .command("shared")
@@ -79,6 +89,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[segments...]", "segments to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program
@@ -88,6 +99,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[slices...]", "slices to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program
@@ -97,6 +109,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[slices...]", "slices to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program
@@ -106,6 +119,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[slices...]", "slices to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program
@@ -115,6 +129,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[slices...]", "slices to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program
@@ -124,24 +139,7 @@ export function parseArguments(args: Array<string>) {
       .argument("[segments...]", "segments to generate")
       .addOption(segmentsOption)
       .addOption(rootOption)
-      .action(resolveCommand);
-
-    program
-      .command("_pages")
-      .aliases(["_p", "_page"])
-      .description("Generate the Pages layer")
-      .argument("[slices...]", "slices to generate")
-      .addOption(segmentsOption)
-      .addOption(rootOption)
-      .action(resolveCommand);
-
-    program
-      .command("_app")
-      .alias("_a")
-      .description("Generate the App layer")
-      .argument("[segments...]", "segments to generate")
-      .addOption(segmentsOption)
-      .addOption(rootOption)
+      .addOption(numberingOption)
       .action(resolveCommand);
 
     program.parse(args);

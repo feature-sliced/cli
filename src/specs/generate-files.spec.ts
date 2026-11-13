@@ -3,8 +3,23 @@ import mockFs from "mock-fs";
 import path from "path";
 import { generateFiles } from "../generate-files";
 import fs from "fs/promises";
+import type { FsdRules } from "../rules";
 
 describe("generateFiles", () => {
+  const rules: FsdRules = {
+    search: { excludedDirectories: [] },
+    generation: {
+      indexExtension: "js",
+      useNumbering: false,
+      underscoreLayers: [],
+    },
+  };
+
+  const typeScriptRules: FsdRules = {
+    ...rules,
+    generation: { ...rules.generation, indexExtension: "ts" },
+  };
+
   const pathExists = async (path: string) => {
     try {
       await fs.access(path);
@@ -32,6 +47,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features"))).toBe(true);
@@ -56,6 +72,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features"))).toBe(true);
@@ -70,6 +87,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user"))).toBe(true);
@@ -97,6 +115,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user"))).toBe(true);
@@ -114,7 +133,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
-      true,
+      typeScriptRules,
     );
 
     expect(await pathExists(path.resolve("/features/user"))).toBe(true);
@@ -132,6 +151,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user"))).toBe(true);
@@ -153,6 +173,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/auth/sign-in"))).toBe(true);
@@ -176,6 +197,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
@@ -193,6 +215,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/shared/ui/"))).toBe(true);
@@ -221,6 +244,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
@@ -238,7 +262,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
-      true,
+      typeScriptRules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
@@ -256,7 +280,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
-      true,
+      typeScriptRules,
     );
 
     expect(await pathExists(path.resolve("/shared/ui/"))).toBe(true);
@@ -272,6 +296,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
@@ -290,6 +315,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui"))).toBe(true);
@@ -311,6 +337,7 @@ describe("generateFiles", () => {
         rootOverride: null,
       },
       path.resolve("/"),
+      rules,
     );
 
     expect(await pathExists(path.resolve("/features/user/ui/forms"))).toBe(
