@@ -2,6 +2,7 @@
   "name": "@feature-sliced/cli",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@8.15.9",
   "description": "Utility to quickly generate layers, slices, and segments from Feature-Sliced Design.",
   "scripts": {
     "build": "tsup src/main.ts --format esm --clean",

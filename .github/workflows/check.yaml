@@ -14,14 +14,14 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: [18, 20]
     runs-on: ${{ matrix.os }}
+    env:
+      npm_config_use_node_version: "null"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Install Node.js
         uses: actions/setup-node@v4
